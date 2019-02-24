@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">conserva</string>
+    <string name="title_activity_maps">Yardım</string>
+
+    <string name="gpsuyari">Konum servisleri kapalı. Açmak ister misiniz?</string>
+    <string name="elle">Konumu manuel seç</string>
+    <string name="sms">Sms ile yardım çağır</string>
+    <string name="ac">Aç</string>
+
+    <string name="evet">Evet</string>
+    <string name="hayir">Hayır</string>
+    <string name="polisile">Polisten yardım isteniyor. Emin misiniz?</string>
+    <string name="itfaiyeile">İtfaiyeden yardım isteniyor. Emin misiniz?</string>
+    <string name="ambulansile">Ambulanstan yardım isteniyor. Emin misiniz?</string>
+</resources>

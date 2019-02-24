@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:layout_weight="0.3"
+        android:layout_height="1dp">
+
+        <ImageView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/medic"
+            android:id="@+id/medic"
+            />
+        <ImageView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cop"
+            android:id="@+id/cop"
+            />
+        <ImageView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fire"
+            android:id="@+id/fire"
+            />
+    </LinearLayout>
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#2e2e2e"
+android:textColor="#eeeeee"
+
+    android:id="@+id/adrestext"
+    android:paddingRight="15dp"
+    android:paddingLeft="15dp"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp"
+
+    />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_weight="0.7"
+        android:layout_alignParentBottom="true">
+
+
+        <fragment
+        android:id="@+id/map"
+
+           android:layout_width="match_parent"
+            class="com.google.android.gms.maps.SupportMapFragment"
+        tools:context=".MapsActivity"
+
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/veri"
+                android:text="Ek Bilgi"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:textSize="10dp"
+
+
+                />
+    </fragment>
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#b71c1c"
+            android:textColor="#eeeeee"
+            android:id="@+id/uyari"
+            android:text="internet bağlantısı yok"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:layout_alignParentBottom="true"
+            android:paddingTop="3dp"
+            android:visibility="invisible"
+            android:textAlignment="center"
+            android:paddingBottom="3dp"
+
+            />
+</RelativeLayout>
+
+</LinearLayout>
