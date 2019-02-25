@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,19 +24,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.telephony.SmsManager;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class konum extends Service {
+import java.io.IOException;
+
+public class  konum extends Service {
     private LocationListener listener;
     private LocationManager locationManager;
+    boolean gonderildi = false;
 
     FirebaseDatabase database;
     DatabaseReference cagri;
     Notification bildirim;
-
+    SmsManager mesajgonder = SmsManager.getDefault();
 
     @SuppressLint("MissingPermission")
     @Override
@@ -43,22 +49,34 @@ public class konum extends Service {
         database = FirebaseDatabase.getInstance();
         cagri = database.getReference("cagri");
 
-
-
         Uri uyariSesi = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.beep);
 
         Intent notificationIntent = new Intent(this, MapsActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
 
-        bildirim = new NotificationCompat.Builder(this, "conserva")
-                .setContentTitle("Conserva")
-                .setContentText("Konum bilgileriniz aktif olarak paylaşılıyor. Durdurmak için tıklayınız!")
-                .setSmallIcon(R.mipmap.icon)
-                .setContentIntent(pendingIntent)
-                .setSound(uyariSesi)
-                .build();
 
+        if(!baglanti()){
+            Toast.makeText(this, "no conn", Toast.LENGTH_SHORT).show();
+            bildirim = new NotificationCompat.Builder(this, "conserva")
+                    .setContentTitle("Conserva")
+                    .setContentText("Konum bilgileriniz sms ile paylaşılıyor.")
+                    .setSmallIcon(R.mipmap.icon)
+                    .setContentIntent(pendingIntent)
+                    .setSound(uyariSesi)
+                    .build();
+        }else {
+
+
+
+            bildirim = new NotificationCompat.Builder(this, "conserva")
+                    .setContentTitle("Conserva")
+                    .setContentText("Konum bilgileriniz aktif olarak paylaşılıyor. Durdurmak için tıklayınız!")
+                    .setSmallIcon(R.mipmap.icon)
+                    .setContentIntent(pendingIntent)
+                    .setSound(uyariSesi)
+                    .build();
+        }
 
         startForeground(1, bildirim);
 
@@ -66,9 +84,17 @@ public class konum extends Service {
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+if(!gonderildi) {
+    if(baglanti()){
+        cagri.child("konum").setValue("benzersizid" + "*" + 1 + "*" + "adres" + "*" + String.valueOf(location.getLatitude() + "*" + location.getLongitude()));
 
-                cagri.child("konum").setValue("benzersizid" + "*" + 1 + "*" + "adres" + "*" + String.valueOf(location.getLatitude() + "*" + location.getLongitude()));
+    }else{
+        mesajgonder.sendTextMessage("05436211104", null, String.valueOf("benzersizid" + "*" + 1 + "*" + null + "*" + String.valueOf(location.getLatitude() + "*" + location.getLongitude()) + "*" + null), null, null);
 
+    }
+
+    gonderildi = true;
+}
                 /**
                 Intent i = new Intent("konum_guncelleme");
                 i.putExtra("koordinat",location.getLongitude()+" "+location.getLatitude());
@@ -113,6 +139,21 @@ public class konum extends Service {
             startForeground(0, bildirim);
 
         }
+    }
+
+    public boolean baglanti() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue==0);
+
+        }
+        catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+
+
+        return false;
     }
 
 

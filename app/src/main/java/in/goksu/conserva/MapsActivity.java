@@ -73,7 +73,7 @@ boolean manuelKonum = false;
 
     boolean gps_acik = false;
     boolean gpsnetwork_acik = false;
-    boolean internet = false;
+
 
     FirebaseDatabase database;
     DatabaseReference cagri;
@@ -152,17 +152,17 @@ Button kapatDialog;
 
     private void konumBildir(int i) {
 
-if(internet) {
+if(baglanti()) {
 
     switch (i) {
         case 1:
-            cagri.child("konum").setValue(id + "*" + 1 + "*" + adres + "*" + String.valueOf(konum.getLatitude() + "*" + konum.getLongitude()));
+            cagri.child("konum").setValue(id + "*" + 1 + "*" + adres + "*" + String.valueOf(konum.getLatitude() + "*" + konum.getLongitude()) + "*" +ekbilgit);
             break;
         case 2:
-            cagri.child("konum").setValue(id + "*" + 2 + "*" + adres + "*" + String.valueOf(konum.getLatitude() + "*" + konum.getLongitude()));
+            cagri.child("konum").setValue(id + "*" + 2 + "*" + adres + "*" + String.valueOf(konum.getLatitude() + "*" + konum.getLongitude())+ "*" +ekbilgit);
             break;
         case 3:
-            cagri.child("konum").setValue(id + "*" + 3 + "*" + adres + "*" + String.valueOf(konum.getLatitude() + "*" + konum.getLongitude()));
+            cagri.child("konum").setValue(id + "*" + 3 + "*" + adres + "*" + String.valueOf(konum.getLatitude() + "*" + konum.getLongitude())+ "*" +ekbilgit);
             break;
     }
 
@@ -188,19 +188,19 @@ if(internet) {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         harita = googleMap;
+if(konum != null) {
+    harita.setMyLocationEnabled(true);
+    CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(konum.getLatitude(), konum.getLongitude()));
+    CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+    harita.moveCamera(center);
+    harita.animateCamera(zoom);
 
-        harita.setMyLocationEnabled(true);
-        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(konum.getLatitude(), konum.getLongitude()));
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
-        harita.moveCamera(center);
-        harita.animateCamera(zoom);
-
-         marker = harita.addMarker(new MarkerOptions()
-                .visible(false)
-                 .position(new LatLng(konum.getLatitude(), konum.getLongitude()))
-                 .title("Buradayım!")
-                .draggable(true));
-
+    marker = harita.addMarker(new MarkerOptions()
+            .visible(false)
+            .position(new LatLng(konum.getLatitude(), konum.getLongitude()))
+            .title("Buradayım!")
+            .draggable(true));
+}
         harita.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -272,7 +272,7 @@ harita.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickL
 
 
     private void servisKontrol() {
-izinAl();
+        izinAl();
         try {
             gps_acik = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             gpsnetwork_acik = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -427,21 +427,11 @@ konumBildir(1);
         try {
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
             int     exitValue = ipProcess.waitFor();
-            if (exitValue != 0){
-                uyari.setVisibility(View.VISIBLE);
-                internet = false;
-                return true;
-            }else{
-                uyari.setVisibility(View.INVISIBLE);
-                internet = true;
-                return false;
-            }
+            return (exitValue==0);
 
         }
         catch (IOException e)          { e.printStackTrace(); }
         catch (InterruptedException e) { e.printStackTrace(); }
-
-
         return false;
     }
 
@@ -457,7 +447,6 @@ konumBildir(1);
 kapatDialog.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
-
         ekbilgit = ekbilgitb.getText().toString();
         dialog.dismiss();
     }
