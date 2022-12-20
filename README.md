@@ -1,6 +1,6 @@
 # conserva
 
-This is my award-winning project automatic location and medical info sender app that I developed in high school. Turkish description and screen shots in the project banner below.
+This is my award-winning project automatic location and medical info sender app that I developed in high school in 2019. Turkish description and screen shots in the project banner below.
 
 
 
